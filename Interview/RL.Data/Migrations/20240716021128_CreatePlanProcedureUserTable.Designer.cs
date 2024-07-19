@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RL.Data;
 
@@ -10,9 +11,10 @@ using RL.Data;
 namespace RL.Data.Migrations
 {
     [DbContext(typeof(RLContext))]
-    partial class RLContextModelSnapshot : ModelSnapshot
+    [Migration("20240716021128_CreatePlanProcedureUserTable")]
+    partial class CreatePlanProcedureUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
@@ -67,8 +69,6 @@ namespace RL.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("PlanId", "ProcedureId", "UserId");
-
-                    b.HasIndex("ProcedureId");
 
                     b.HasIndex("UserId");
 
@@ -868,50 +868,29 @@ namespace RL.Data.Migrations
 
             modelBuilder.Entity("RL.Data.DataModels.PlanProcedureUser", b =>
                 {
-                    b.HasOne("RL.Data.DataModels.Plan", "Plan")
-                        .WithMany("PlanProcedureUsers")
-                        .HasForeignKey("PlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RL.Data.DataModels.Procedure", "Procedure")
-                        .WithMany("PlanProcedureUsers")
-                        .HasForeignKey("ProcedureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RL.Data.DataModels.User", "User")
                         .WithMany("PlanProcedureUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RL.Data.DataModels.PlanProcedure", null)
+                    b.HasOne("RL.Data.DataModels.PlanProcedure", "PlanProcedure")
                         .WithMany("PlanProcedureUsers")
                         .HasForeignKey("PlanId", "ProcedureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Plan");
-
-                    b.Navigation("Procedure");
+                    b.Navigation("PlanProcedure");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("RL.Data.DataModels.Plan", b =>
                 {
-                    b.Navigation("PlanProcedureUsers");
-
                     b.Navigation("PlanProcedures");
                 });
 
             modelBuilder.Entity("RL.Data.DataModels.PlanProcedure", b =>
-                {
-                    b.Navigation("PlanProcedureUsers");
-                });
-
-            modelBuilder.Entity("RL.Data.DataModels.Procedure", b =>
                 {
                     b.Navigation("PlanProcedureUsers");
                 });

@@ -10,4 +10,5 @@ public class Procedure : IChangeTrackable
     public string ProcedureTitle { get; set; }
     public DateTime CreateDate { get; set; }
     public DateTime UpdateDate { get; set; }
+    public virtual ICollection<PlanProcedureUser> PlanProcedureUsers { get; set; }
 }

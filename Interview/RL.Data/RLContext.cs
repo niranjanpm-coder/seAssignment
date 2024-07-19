@@ -9,7 +9,7 @@ public class RLContext : DbContext
     public DbSet<PlanProcedure> PlanProcedures { get; set; }
     public DbSet<Procedure> Procedures { get; set; }
     public DbSet<User> Users { get; set; }
-
+    public DbSet<PlanProcedureUser> PlanProcedureUsers { get; set; }
     public RLContext() { }
     public RLContext(DbContextOptions<RLContext> options) : base(options) { }
 
@@ -24,6 +24,19 @@ public class RLContext : DbContext
             typeBuilder.HasOne(pp => pp.Procedure).WithMany();
         });
 
+        builder.Entity<PlanProcedureUser>(typeBuilder =>
+        {
+            typeBuilder.HasKey(ppu => new { ppu.PlanId, ppu.ProcedureId, ppu.UserId });
+            typeBuilder.HasOne(ppu => ppu.Plan)
+                       .WithMany(p => p.PlanProcedureUsers)
+                       .HasForeignKey(ppu => ppu.PlanId);
+            typeBuilder.HasOne(ppu => ppu.Procedure)
+                       .WithMany(p => p.PlanProcedureUsers)
+                       .HasForeignKey(ppu => ppu.ProcedureId);
+            typeBuilder.HasOne(ppu => ppu.User)
+                       .WithMany(u => u.PlanProcedureUsers)
+                       .HasForeignKey(ppu => ppu.UserId);
+        });
         //Add procedure Seed Data
         var seedData = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "ProcedureSeedData.csv"));
         builder.Entity<Procedure>(p =>
